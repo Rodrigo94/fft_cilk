@@ -21,6 +21,7 @@ int main() {
   complex<double>* s = Recursive_FFT(a, 8);
 
   for ( int i = 0; i < 8; i++ ) {
+    cout << "X[" << i << "] = ";
     cout << s[i].real() << " " << s[i].imag() << endl;
   }
 }
