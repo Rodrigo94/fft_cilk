@@ -1,22 +1,56 @@
 /*
-fft_serial - Implementaçõe seriais para a transformada rápida de Fourier
-*/
+fft_serial - Implementações seriais para a transformada rápida de Fourier
+fft_parallel - Implementações paralelas para a transformada rápida de Fourier
 
+Ferramentas:
+  - Microsoft Visual Studio 2013;
+  - Intel Cilk Plus;
+  - Intel Parallel Studio XE 13;
+  - CUDA ToolKit v6;
+  ...
+
+Considerações:
+  - Estou assumindo que a série terá tamanho igual a uma potência de 2;
+  - A variável SERIE_SIZE indica o tamanho da série em expoentes;
+  - Arquivos geradores de séries diferentes estarão disponíveis;
+    - Função Degrau;
+    - Onda triangular;
+    - Onda Quadrada;
+    - Função Seno;
+    - Função Cosseno;
+    - Decaimento Exponencial;
+    ...
+  - Um script em python para plotar os resultados estará disponível;
+  - A implementação em CUDA será feita para validar esta;
+  - Será implementado em um ambiente distribuído futuramente;
+  ...
+
+Notas:
+  - Pode ser feita uma implementação serial habilitando o cilk para "modo serial"
+  ...
+*/
 #include "fft_serial.h"
 #include "fft_parallel.h"
+#include <math.h>
 #include <time.h>
-
 using namespace std;
-
+const int SERIE_SIZE = 4;
 int main() {
-
-  complex<double>* a = new complex<double>[1048576];
-  for ( int i = 0; i < 1048576; i++ ) {
-    a[i] = complex<double>(i, 1048576 - i);
+  int n = pow(2, SERIE_SIZE);
+  complex<double>* a = new complex<double>[n];
+  for ( int i = 0; i < n; i++ ) {
+    a[i] = complex<double>(sin((double(i) / n) * 2 * M_PI), 0);
   }
   clock_t start = clock();
-  complex<double>* s1 = Parallel_Recursive_FFT(a, 1048576);
+  complex<double>* s1 = Parallel_Recursive_FFT(a, n); //Execução//
   clock_t end = clock();
   float sec = (float)(end - start) / CLOCKS_PER_SEC;
   cout << sec << " seconds elapsed!" << endl;
+  for ( int i = 0; i < n; i++ ) {
+    cout
+      << i << ": "
+      << a[i].real() << " ---> "
+      << s1[i].real() << " + " << s1[i].imag() << "i"
+      << endl;
+  }
 }
