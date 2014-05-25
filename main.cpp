@@ -3,25 +3,14 @@ fft_serial - Implementaçõe seriais para a transformada rápida de Fourier
 */
 
 #include "fft_serial.h"
+#include "fft_parallel.h"
 
 using namespace std;
 
 int main() {
-  cout << "Agora vou testar o fft com :" << endl;
-  complex<double> a[8];
-  a[0] = complex<double>(1, 0);
-  a[1] = complex<double>(1, 0);
-  a[2] = complex<double>(1, 0);
-  a[3] = complex<double>(1, 0);
-  a[4] = complex<double>(0, 0);
-  a[5] = complex<double>(0, 0);
-  a[6] = complex<double>(0, 0);
-  a[7] = complex<double>(0, 0);
-
-  complex<double>* s = Recursive_FFT(a, 8);
-
-  for ( int i = 0; i < 8; i++ ) {
-    cout << "X[" << i << "] = ";
-    cout << s[i].real() << " " << s[i].imag() << endl;
+  complex<double>* a = new complex<double>[1048576];
+  for ( int i = 0; i < 1048576; i++ ) {
+    a[i] = complex<double>(i, 1048576 - i);
   }
+  complex<double>* s1 = Recursive_FFT(a, 1048576);
 }

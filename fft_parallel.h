@@ -9,5 +9,7 @@
 
 using namespace std;
 
+complex<double>* Parallel_Recursive_FFT(complex<double>* a, int n);
+
 
 #endif // !FFT_PARALLEL

@@ -4,6 +4,8 @@
 Implementação Recursiva da Transformada Rápida de Fourier
 */
 complex<double>* Recursive_FFT(complex<double>* a, int n) {
+  
+  
   if ( n == 1 ) {
     return a;
   }
@@ -22,7 +24,6 @@ complex<double>* Recursive_FFT(complex<double>* a, int n) {
   complex<double>* y_1 = new complex<double>[n];
   complex<double>* y = new complex<double>[n];
 
-
   for ( int i = 0; i < n; i++ ) {
     if ( i % 2 == 0 ) {
       a_0[i / 2] = complex<double>(a[i].real(), a[i].imag());
@@ -31,8 +32,10 @@ complex<double>* Recursive_FFT(complex<double>* a, int n) {
     }
   }
 
+
   y_0 = Recursive_FFT(a_0, n / 2);
   y_1 = Recursive_FFT(a_1, n / 2);
+
 
   for ( int k = 0; k < n / 2; k++ ) {
     y[k] = y_0[k] + u * y_1[k];
@@ -40,7 +43,6 @@ complex<double>* Recursive_FFT(complex<double>* a, int n) {
     u = u * u_n;
 
   }
-  //delete a;
   return y;
 }
 
