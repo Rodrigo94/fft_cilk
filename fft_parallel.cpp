@@ -17,16 +17,13 @@ complex<double>* Parallel_Recursive_FFT(complex<double>* a, int n) {
   complex<double>* y = new complex<double>[n];
 
 
-  cilk_for ( int i = 0; i < n; i++ ) {
-    if ( i % 2 == 0 ) {
-      a_0[i / 2] = complex<double>(a[i].real(), a[i].imag());
-    } else {
-      a_1[i / 2] = complex<double>(a[i].real(), a[i].imag());
-    }
+  cilk_for(int i = 0; i < halve; i++) {
+    a_0[i] = complex<double>(a[i + i].real(), a[i + i].imag());
+    a_1[i] = complex<double>(a[i + i + 1].real(), a[i + i].imag());
   }
 
-  y_0 = cilk_spawn Parallel_Recursive_FFT(a_0, n / 2);
-  y_1 = cilk_spawn Parallel_Recursive_FFT(a_1, n / 2);
+  y_0 = cilk_spawn Parallel_Recursive_FFT(a_0, halve);
+  y_1 = cilk_spawn Parallel_Recursive_FFT(a_1, halve);
 
   cilk_sync;
 
@@ -35,6 +32,5 @@ complex<double>* Parallel_Recursive_FFT(complex<double>* a, int n) {
     y[k] = y_0[k] + u * y_1[k];
     y[k + (halve)] = y_0[k] - u * y_1[k];
   }
-
   return y;
 }
