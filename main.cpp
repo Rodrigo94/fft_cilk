@@ -32,10 +32,13 @@ Notas:
 #include "fft_serial.h"
 #include "fft_parallel.h"
 #include <fstream>
+#include <ittnotify.h>
+#include <cilk\cilk_api.h>
 #include <math.h>
 #include <time.h>
 using namespace std;
 int main(int argc, char* argv[]) {
+
   int SERIE_SIZE = atoi(argv[1]);
   int n = pow(2, SERIE_SIZE);
   complex<double>* a = new complex<double>[n];
@@ -53,29 +56,10 @@ int main(int argc, char* argv[]) {
     a[i] = complex<double>(0, 0);
   }
 
-  /////////////////////////////////////////////////////////////
-
-
-  //Execução e Medição:
-  //clock_t start = clock();
+  // Execução e Medição:
+  // API Intel VTune para medição:
+  __itt_resume();
   complex<double>* s1 = Parallel_Recursive_FFT(a, n); //Execução//
-  //clock_t end = clock();
-  //float sec = (float)(end - start) / CLOCKS_PER_SEC;
-  //cout << sec << " seconds elapsed!" << endl;
-
-  /*//Série é escrita em arquivo:
-  ofstream fs;
-  fs.open("Results/teste.txt", ofstream::out);
-  for ( int i = 0; i < n; i++ ) {
-    fs << s1[i] << endl;
-  }
-  fs.close();*/
-
-  for ( int i = 0; i < 10; i++ ) {
-    cout
-    << i << ":\t"
-    << a[i].real() << " \t "
-    << s1[i].real() << "\t+ " << s1[i].imag() << "i"
-    << endl;
-    }
+  __itt_pause();
+  
 }
